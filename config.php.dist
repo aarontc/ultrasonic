@@ -1,0 +1,21 @@
+<?
+
+	// ultrasonic configuration directives
+	// basically, just set up the database
+	// the Config class will handle everything thereafter
+
+	// The database type. Any type supported by adodb is allowed
+	// (mysql, postgres, oracle, sqlite, mssql, etc.)
+	$_CONFIG['Database']['Type'] = 'sqlite';
+
+	// Server hosting your database
+	$_CONFIG['Database']['Server'] = 'localhost';
+
+	// Login and password not required for sqlite
+	$_CONFIG['Database']['Login'] = '';
+	$_CONFIG['Database']['Password'] = '';
+
+	// Database name. For sqlite this is the database path
+	$_CONFIG['Database']['Database'] = '/var/lib/ultrasonic/database.sqlite3';
+
+?>
