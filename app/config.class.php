@@ -11,8 +11,8 @@
 
 		// Returns a string value by path. If string does not exist, false is returned
 		function get_string($path) {
-			//$db = new Database();
-			$result = $this->db->query("SELECT * FROM BLAH");
+			$stmt = $this->db->ado->Prepare('SELECT value FROM strings WHERE path=' . $this->db->ado->Param('p') . '');
+			$result = $this->db->ado->query($stmt, $path);
 			return $result;
 		}
 	}

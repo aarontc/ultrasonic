@@ -12,15 +12,15 @@
 	require('./lib/adodb5/adodb.inc.php');
 
 	class Database {
-		const SCHEMA_VERSION = 0;
-		private $db;
+		const SCHEMA_VERSION = 1;
+		public $ado;
 		public $connected = false;
 
 		function __construct() {
 			global $_CONFIG;
-			$this->db = ADONewConnection($_CONFIG['Database']['Type']);
-			$this->db->debug = true;
-			$this->connected = $this->db->Connect($_CONFIG['Database']['Server'],
+			$this->ado = ADONewConnection($_CONFIG['Database']['Type']);
+			$this->ado->debug = true;
+			$this->connected = $this->ado->Connect($_CONFIG['Database']['Server'],
 						$_CONFIG['Database']['Login'],
 						$_CONFIG['Database']['Password'],
 						$_CONFIG['Database']['Database']);
@@ -38,21 +38,21 @@
 			global $_CONFIG;
 
 			// validate schema version
-			$result = $this->db->Execute("SELECT MAX(version) FROM schema");
+			$result = $this->ado->Execute("SELECT MAX(version) FROM schema_migrations");
 			if(!$result) {
 				// no database
 				if($_CONFIG['Database']['Type'] == 'sqlite') {
 					// create the database
-					$query = file_get_contents("./db/sqlite/schema_version_0.sql");
-					$result = $this->db->Execute($query);
+					$query = file_get_contents("./db/sqlite/schema_version_1.sql");
+					$result = $this->ado->Execute($query);
 					if(!$result)
-						die($this->db->ErrorMsg());
+						die($this->ado->ErrorMsg());
 				} else {
 					die("Please create database schema. See files in db directory.");
 				}
 			} else {
-				if($result->fields[0] != SCHEMA_VERSION) {
-					die("Schema version outdated. See files in db directory.");
+				if($result->fields[0] != self::SCHEMA_VERSION) {
+					die("Schema version ('" . $result->fields[0] . "') outdated. Current is ('" . self::SCHEMA_VERSION . "') See files in db directory.");
 				}
 			}
 		}
