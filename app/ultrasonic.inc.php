@@ -1,6 +1,8 @@
 <?php
 
 	// Ultrasonic header here :)
+	ob_start();
+	session_start();
 
 	// Disable caching
 	header('Expires: 0');
@@ -8,6 +10,6 @@
 	header('cache-control: no-store, no-cache, must-revalidate');
 	header('Pragma: no-cache');
 
-	require('./app/config.class.php');
+	require('./app/ultrasonic.class.php');
 
 ?>

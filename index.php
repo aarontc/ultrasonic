@@ -3,15 +3,11 @@
 	// Ultrasonic header here :)
 
 	require('./app/ultrasonic.inc.php');
+	$uri = str_replace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
+	if(substr($uri, 0, 1) == '/')
+		$uri = substr($uri, 1);
 
-	$config = new Config();
-	echo $config->get_string("/test/string");
-
-	$config->set_string("/test/string", "Aaron");
-	echo $config->get_string("/test/string");
-
-	$array = array("hello" => "stuff", "goodbye" => "tomorrow");
-
-	$config->set_array('/test/array', $array);
+	$application = new Ultrasonic();
+	$application->dispatch($uri);
 
 ?>
