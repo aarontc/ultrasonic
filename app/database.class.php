@@ -12,7 +12,7 @@
 	require('./lib/adodb5/adodb.inc.php');
 
 	class Database {
-		const SCHEMA_VERSION = 1;
+		const SCHEMA_VERSION = 2;
 		public $ado;
 		public $connected = false;
 
@@ -44,9 +44,13 @@
 				if($_CONFIG['Database']['Type'] == 'sqlite') {
 					// create the database
 					$query = file_get_contents("./db/sqlite/schema_version_1.sql");
-					$result = $this->ado->Execute($query);
-					if(!$result)
-						die($this->ado->ErrorMsg());
+					$queries = explode(";", $query);
+					foreach ($queries as $q) {
+						$result = $this->ado->Execute($q);
+						if(!$result) {
+							die($this->ado->ErrorMsg());
+						}
+					}
 				} else {
 					die("Please create database schema. See files in db directory.");
 				}
