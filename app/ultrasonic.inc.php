@@ -1,5 +1,7 @@
 <?php
 
+	require_once('./app/user.class.php');
+
 	// Ultrasonic header here :)
 	ob_start();
 	session_start();

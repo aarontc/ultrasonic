@@ -12,7 +12,7 @@
 	require('./lib/adodb5/adodb.inc.php');
 
 	class Database {
-		const SCHEMA_VERSION = 2;
+		const SCHEMA_VERSION = 3;
 		public $ado;
 		public $connected = false;
 
