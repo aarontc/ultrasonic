@@ -6,7 +6,7 @@
 	} else {
 		// let the user know
 		//header('Location: ./create_config.php');
-		die('Please create config.php in the root directory. See config.php.dist for hints');
+		throw new Exception('Please create config.php in the root directory. See config.php.dist for hints');
 	}
 
 	require('./lib/adodb5/adodb.inc.php');
@@ -30,7 +30,7 @@
 
 		function query($query) {
 			if($this->connected !== true)
-				die("DB connection does not exist");
+				throw new Exception("DB connection does not exist");
 			return $this->db->Execute($query);
 		}
 
@@ -48,15 +48,15 @@
 					foreach ($queries as $q) {
 						$result = $this->ado->Execute($q);
 						if(!$result) {
-							die($this->ado->ErrorMsg());
+							throw new Exception($this->ado->ErrorMsg());
 						}
 					}
 				} else {
-					die("Please create database schema. See files in db directory.");
+					throw new Exception("Please create database schema. See files in db directory.");
 				}
 			} else {
 				if($result->fields[0] != self::SCHEMA_VERSION) {
-					die("Schema version ('" . $result->fields[0] . "') outdated. Current is ('" . self::SCHEMA_VERSION . "') See files in db directory.");
+					throw new Exception("Schema version ('" . $result->fields[0] . "') outdated. Current is ('" . self::SCHEMA_VERSION . "') See files in db directory.");
 				}
 			}
 		}
