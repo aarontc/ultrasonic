@@ -101,7 +101,7 @@
 		// if $role is not an array, $all is ignored
 		function require_role($role, $all = false) {
 			if(is_array($role)) {
-				die('not done');
+				throw new Exception('fixme: handle role arrays');
 			} else {
 				if(isset($_SESSION['User']) && in_array($role, $_SESSION['User']->roles)) {
 					return true;
