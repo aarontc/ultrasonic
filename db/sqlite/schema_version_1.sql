@@ -12,6 +12,4 @@ CREATE TABLE strings (
 
 CREATE UNIQUE INDEX string_path ON strings(path);
 
-
 INSERT INTO schema_migrations(version) VALUES(1);
-

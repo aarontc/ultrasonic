@@ -233,12 +233,10 @@
 		// Main workhorse
 		// Given the requested path, evaluate where to send the request
 		function dispatch($path) {
-
-		print_r($_SESSION);
 			// check for genesis
-			if(self::genesis()) {
+			if($this->genesis()) {
 				if($path != 'admin/create_user') {
-					self::flash_info("Welcome new user! Please create your account");
+					$this->flash_info("Welcome new user! Please create your account");
 					header('Location: /index.php/admin/create_user');
 					exit;
 				}

@@ -9,7 +9,8 @@
 		throw new Exception('Please create config.php in the root directory. See config.php.dist for hints');
 	}
 
-	require('./lib/adodb5/adodb.inc.php');
+	require_once("./lib/adodb5/adodb-exceptions.inc.php");
+	require_once('./lib/adodb5/adodb.inc.php');
 
 	class Database {
 		const SCHEMA_VERSION = 3;
@@ -38,26 +39,24 @@
 			global $_CONFIG;
 
 			// validate schema version
-			$result = $this->ado->Execute("SELECT MAX(version) FROM schema_migrations");
-			if(!$result) {
+			try {
+				$result = $this->ado->Execute("SELECT MAX(version) FROM schema_migrations");
+			} catch (Exception $e) {
 				// no database
 				if($_CONFIG['Database']['Type'] == 'sqlite') {
 					// create the database
-					$query = file_get_contents("./db/sqlite/schema_version_1.sql");
-					$queries = explode(";", $query);
-					foreach ($queries as $q) {
-						$result = $this->ado->Execute($q);
-						if(!$result) {
-							throw new Exception($this->ado->ErrorMsg());
-						}
+					for($i = 1; $i <= self::SCHEMA_VERSION; $i++) {
+						$query = file_get_contents("./db/sqlite/schema_version_${i}.sql");
+						$this->ado->StartTrans();
+						$this->ado->Execute($query);
+						$this->ado->CompleteTrans();
 					}
 				} else {
 					throw new Exception("Please create database schema. See files in db directory.");
 				}
-			} else {
-				if($result->fields[0] != self::SCHEMA_VERSION) {
-					throw new Exception("Schema version ('" . $result->fields[0] . "') outdated. Current is ('" . self::SCHEMA_VERSION . "') See files in db directory.");
-				}
+			}
+			if($result->fields[0] != self::SCHEMA_VERSION) {
+				throw new Exception("Schema version ('" . $result->fields[0] . "') outdated. Current is ('" . self::SCHEMA_VERSION . "') See files in db directory.");
 			}
 		}
 	}
