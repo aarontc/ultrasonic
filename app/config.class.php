@@ -41,6 +41,19 @@
 			}
 		}
 
+		public function delete_array_value($path, $value) {
+			$this->db->ado->StartTrans();
+			$old = $this->get_array($path);
+			$new = array();
+			foreach($old as $o) {
+				if($o != $value) {
+					$new[] = $o;
+				}
+			}
+			$this->set_array($path, $new);
+			$this->db->ado->CompleteTrans();
+		}
+
 		function set_array($path, $value) {
 			$stmt = $this->db->ado->Prepare('REPLACE INTO arrays (path, value) VALUES(' . $this->db->ado->Param('p') .
 											', ' . $this->db->ado->Param('v') . ')');

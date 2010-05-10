@@ -13,7 +13,7 @@
 </div>
 {/if}
 {if count($FlashInfo) > 0}
-<div class="flashnotice">
+<div class="flashinfo">
 	{foreach from=$FlashInfo item=msg}
 	<p>{$msg}</p>
 	{/foreach}
