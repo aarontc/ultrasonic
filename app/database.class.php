@@ -13,14 +13,14 @@
 	require_once('./lib/adodb5/adodb.inc.php');
 
 	class Database {
-		const SCHEMA_VERSION = 3;
+		const SCHEMA_VERSION = 4;
 		public $ado;
 		public $connected = false;
 
 		function __construct() {
 			global $_CONFIG;
 			$this->ado = ADONewConnection($_CONFIG['Database']['Type']);
-			$this->ado->debug = true;
+			//$this->ado->debug = true;
 			$this->connected = $this->ado->Connect($_CONFIG['Database']['Server'],
 						$_CONFIG['Database']['Login'],
 						$_CONFIG['Database']['Password'],

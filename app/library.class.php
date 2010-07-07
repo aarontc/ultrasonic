@@ -12,11 +12,14 @@
 
 		function get_collections() {
 			$collections = array();
-			$result = $this->db->ado->Execute("SELECT path FROM collection");
+			$result = $this->db->ado->Execute("SELECT id FROM collection");
 			foreach($result as $c) {
 				$collections[] = new Collection($c[0]);
 			}
 			print_r($collections);
 			return $collections;
+		}
+
+		function search($input) {
 		}
 	}

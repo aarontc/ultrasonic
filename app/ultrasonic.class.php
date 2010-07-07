@@ -271,8 +271,8 @@
 				// Users index page
 				$users = User::get_all();
 				$this->smarty->assign('Users', $users);
-				$this->content = './tpl/admin/users.tpl';
-				$this->secondarycontent = './tpl/admin/users-actions.tpl';
+				$this->content = './tpl/admin/users/index.tpl';
+				$this->secondarycontent = './tpl/admin/users/index_right.tpl';
 			} else if(count($path) == 1) {
 				switch($path[0]) {
 					case "create":
@@ -307,6 +307,67 @@
 			}
 		}
 
+		function page_admin_collections_create() {
+			if(isset($_POST['path'])) {
+				$success = true;
+				$collection = new Collection();
+				$collection->path = $_POST['path'];
+				if($collection->validate_path()) {
+					if($collection->save()) {
+						$this->flash_success('Collection added');
+					} else {
+						$this->flash_error('Unable to save collection to database.');
+					}
+				} else {
+					$this->smarty->assign('path', $_POST['path']);
+					$this->flash_error('Collection could not be added. Check path.');
+				}
+			}
+			$this->content='./tpl/admin/collections/create.tpl';
+		}
+
+
+		function page_admin_collections($path) {
+			$this->require_role('admin');
+			if(count($path) == 0) {
+				// collections index page
+				$lib = new Library();
+				$this->smarty->assign('Collections', $lib->get_collections());
+				$this->secondarycontent = './tpl/admin/collections/index_right.tpl';
+				$this->content = './tpl/admin/collections/index.tpl';
+			} else if(count($path) == 1) {
+				switch($path[0]) {
+					case 'create':
+						$this->page_admin_collections_create();
+						break;
+					default:
+						$this->page_404($path);
+				}
+			} else if(count($path) == 2) {
+				// /admin/collections/<id>/action
+				$collection_id = $path[0];
+				$action = $path[1];
+				switch($action) {
+					case 'scan':
+						$c = new Collection($collection_id);
+						$c->scan();
+						die('scan done');
+						break;
+					case 'delete':
+						die('undefined');
+						break;
+					default:
+						$this->page_404($path);
+				}
+			} else {
+				$this->page_404($path);
+			}
+		}
+
+
+
+
+
 		function page_admin($path) {
 			if(!$this->genesis() && !$this->require_role('admin'))
 				return;
@@ -314,33 +375,10 @@
 			if(count($path) > 0) {
 				switch($path[0]) {
 					case 'collections':
-						$lib = new Library();
-						$this->smarty->assign('Collections', $lib->get_collections());
-						$this->secondarycontent = './tpl/admin/collections_right.tpl';
-						$this->content = './tpl/admin/collections.tpl';
+						$this->page_admin_collections(array_leftover($path));
+
+
 						break;
-
-					case 'create_collection':
-						if(isset($_POST['path'])) {
-							$success = true;
-							$collection = new Collection();
-							$collection->path = $_POST['path'];
-							if($collection->validate_path()) {
-								if($collection->save()) {
-									$this->flash_success('Collection added');
-								} else {
-									$this->flash_error('Unable to save collection to database.');
-								}
-							} else {
-								$this->smarty->assign('path', $_POST['path']);
-								$this->flash_error('Collection could not be added. Check path.');
-							}
-						}
-						$this->content='./tpl/admin/create_collection.tpl';
-						break;
-
-
-
 
 					case 'users':
 						$this->page_admin_users(array_leftover($path));
@@ -351,7 +389,7 @@
 				}
 			} else {
 				$this->content='./tpl/admin/index.tpl';
-				$this->secondarycontent = './tpl/admin/rightmenu.tpl';
+				$this->secondarycontent = './tpl/admin/index_right.tpl';
 			}
 		}
 
@@ -377,8 +415,8 @@
 				} else {
 					$leftover = array_leftover($elements);
 
-					print_r($elements);
-					print_r($leftover);
+					//print_r($elements);
+					//print_r($leftover);
 
 					switch($elements[0]) {
 						case 'home':
